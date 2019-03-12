@@ -10,6 +10,7 @@ var newMap;
 document.addEventListener('DOMContentLoaded', () => {
   SWHelper.install();
   initMap();
+  initEvents();
 });
 
 /**
@@ -35,6 +36,10 @@ function initMap() {
       DBHelper.mapMarkerForRestaurant(restaurant, newMap);
     })
     .catch(console.error)
+}
+
+function initEvents() {
+  document.getElementById('reviews-add-button').addEventListener("click", () => alert('Hola!!!'))
 }
 
 /**
@@ -111,9 +116,6 @@ function fillRestaurantHoursHTML(operatingHours) {
  */
 function fillReviewsHTML(reviews) {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -121,6 +123,7 @@ function fillReviewsHTML(reviews) {
     container.appendChild(noReviews);
     return;
   }
+  
   const ul = document.getElementById('reviews-list');
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
