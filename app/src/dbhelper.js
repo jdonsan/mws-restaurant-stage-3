@@ -9,7 +9,7 @@ export default class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    return 'http://localhost:1337/restaurants';
+    return 'http://localhost:1337';
   }
 
   /**
@@ -27,7 +27,7 @@ export default class DBHelper {
   }
 
   static fetchAPI(id = '') {
-    return fetch(`${DBHelper.DATABASE_URL}/${id}`)
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
       .then(response => response.json())
       .then(restaurants => IDBHelper.set(restaurants))
   }
@@ -118,7 +118,7 @@ export default class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}.jpg`);
+    return (`/img/${restaurant.id}.jpg`);
   }
 
   /**
@@ -134,6 +134,33 @@ export default class DBHelper {
       })
     marker.addTo(map);
     return marker;
+  }
+
+  static saveReview(review) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        method: 'POST',
+        body: JSON.stringify(review),
+        headers: { 'Content-Type': 'application/json' }
+      }
+
+      fetch(`${DBHelper.DATABASE_URL}/reviews`, options)
+        .then(response => response.json())
+        .then(review => {
+          IDBHelper.setReview(review.restaurant_id, {
+            name: review.name,
+            rating: review.rating,
+            comments: review.comments,
+            date: new Date(review.createdAt).toLocaleDateString('en-EN', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })
+          })
+          resolve(review)
+        })
+        .catch(error => reject(error))
+    })
   }
 
 }

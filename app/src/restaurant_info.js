@@ -39,13 +39,31 @@ function initMap() {
 }
 
 function initEvents() {
-  document.getElementById('reviews-add-button').addEventListener("click", () => {
-    document.getElementById('dialog-new-review').classList.remove("close");
-  })
+  document.getElementById('reviews-add-button').addEventListener("click", onOpenDialog)
+  document.getElementById('dialog-new-review-close').addEventListener("click", onCloseDialog)
+  document.getElementById('dialog-new-review-form').addEventListener("submit", onSaveReview)
+}
 
-  document.getElementById('dialog-new-review-close').addEventListener("click", () => {
-    document.getElementById('dialog-new-review').classList.add("close");
-  })
+function onOpenDialog() {
+  document.getElementById('dialog-new-review').classList.remove("close");
+}
+
+function onCloseDialog() {
+  document.getElementById('dialog-new-review').classList.add("close");
+}
+
+function onSaveReview(event) {
+  event.preventDefault()
+  const review = {
+    restaurant_id: parseInt(getParameterByName('id')),
+    name: document.getElementById('username').value,
+    rating: parseInt(document.getElementById('rating').value),
+    comments: document.getElementById('comment').value
+  }
+
+  DBHelper.saveReview(review)
+    .then(() => fetchRestaurantFromURL())
+    .catch(error => console.log(error))
 }
 
 /**
@@ -125,12 +143,17 @@ function fillReviewsHTML(reviews) {
 
   if (!reviews) {
     const noReviews = document.createElement('p');
+    noReviews.id = 'message-no-reviews'
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
     return;
+  } else {
+    document.getElementById('message-no-reviews').innerHTML = '';
   }
-  
+
   const ul = document.getElementById('reviews-list');
+  ul.innerHTML = ''
+  
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });

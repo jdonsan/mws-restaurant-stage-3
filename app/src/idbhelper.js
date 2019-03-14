@@ -33,4 +33,18 @@ export default class IDBHelper {
       return Promise.all(promise).then(() => values)
     })
   }
+
+  static setReview(id, review) {
+    return dbPromise.then(db => {
+      return IDBHelper.get(id).then(restaurant => {
+        if (!restaurant.reviews) {
+          restaurant.reviews = []
+        }
+        restaurant.reviews.unshift(review)
+        const tx = db.transaction(STORE_RESTAURANT, 'readwrite');
+        tx.objectStore(STORE_RESTAURANT).put(restaurant);
+        return tx.complete;
+      })
+    })
+  }
 }
