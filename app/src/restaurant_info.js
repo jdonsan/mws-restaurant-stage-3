@@ -39,7 +39,13 @@ function initMap() {
 }
 
 function initEvents() {
-  document.getElementById('reviews-add-button').addEventListener("click", () => alert('Hola!!!'))
+  document.getElementById('reviews-add-button').addEventListener("click", () => {
+    document.getElementById('dialog-new-review').classList.remove("close");
+  })
+
+  document.getElementById('dialog-new-review-close').addEventListener("click", () => {
+    document.getElementById('dialog-new-review').classList.add("close");
+  })
 }
 
 /**

@@ -49,7 +49,7 @@
     <section id="reviews-container">
       <div id="reviews-header">
         <h2>Reviews</h2>
-        <button id="reviews-add-button">Add new review</button>
+        <button id="reviews-add-button">New review</button>
       </div>
       <ul id="reviews-list"></ul>
     </section>
@@ -59,41 +59,37 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
 
-  <div id="dialog-new-review" role="dialog" aria-labelledby="dialog-new-review-title"
-    aria-describedby="popup-new-review-description">
-    <div id="dialog-new-review-background"></div>
-
-    <div id="dialog-new-review-content">
-
-      <div id="dialog-new-review-header">
-        <h2 id="dialog-new-review-title">Add new review</h2>
+  <div id="dialog-new-review" class="close" role="dialog" aria-labelledby="dialog-new-review-title"
+    aria-describedby="dialog-new-review-description">
+    <div id="dialog-new-review-header">
+      <div>
+        <h2 id="dialog-new-review-title">New review</h2>
         <p id="dialog-new-review-description">
-          Share your reviews with other users to improve the experience in thisrestaurant
+          Share your reviews with other users to improve the experience in this restaurant
         </p>
-        <button>X</button>
+      </div>
+      <button id="dialog-new-review-close">X</button>
+    </div>
+
+    <form>
+      <div class="field">
+        <label for="username">Name</label>
+        <input id="username" type="text" placeholder="E.g. John Doe">
       </div>
 
-      <form>
-        <div class="field">
-          <label for="username">Name</label>
-          <input id="username" type="text" placeholder="E.g. John Doe">
-        </div>
+      <div class="field">
+        <label for="rating">Rating</label>
+        <input id="rating" type="number" placeholder="E.g. 5" min="0" max="10">
+      </div>
 
-        <div class="field">
-          <label for="rating">Rating</label>
-          <input id="rating" type="number" placeholder="E.g. 5" min="0" max="10">
-        </div>
+      <div class="field comments">
+        <label for="comment">Comment</label>
+        <textarea id="comment"
+          placeholder="E.g. Too juicy for its own good and downright addicting. Also try the Colony pizza."></textarea>
+      </div>
 
-        <div class="field">
-          <label for="comment">Comment</label>
-          <textarea id="comment"
-            placeholder="E.g. Too juicy for its own good and downright addicting. Also try the Colony pizza."></textarea>
-        </div>
-
-        <button>Send</button>
-      </form>
-
-    </div>
+      <button>Send</button>
+    </form>
   </div>
 
   <!-- Scripts -->

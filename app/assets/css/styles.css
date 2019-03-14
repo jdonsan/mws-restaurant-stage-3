@@ -106,7 +106,7 @@ nav h1 a {
     background-color: #eee;
     font-size: 17px;
     margin: 0;
-    z-index: 1000;
+    z-index: 1001;
 }
 @media (min-width: 768px)  { 
   #breadcrumb { 
@@ -248,7 +248,7 @@ nav h1 a {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 .inside #map-container {
@@ -412,4 +412,110 @@ nav h1 a {
 
 *:focus, select:focus {
   border: 2px solid orange;
+}
+
+#dialog-new-review {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: #252831ea;
+  z-index: 1002;
+  transition: 0.5s;
+}
+
+#dialog-new-review.close {
+  transform: translate(0, 100%);
+}
+
+#dialog-new-review #dialog-new-review-header {
+  background: #252831;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+#dialog-new-review #dialog-new-review-header h2 {
+  font-weight: lighter;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  line-height: 1.3rem;
+}
+
+#dialog-new-review #dialog-new-review-header p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.651);
+  line-height: 1rem;
+}
+#dialog-new-review #dialog-new-review-header button {
+  padding: 1rem;
+  font-size: 1.5rem;
+  background: transparent;
+  border: 0;
+  color: #fff;
+}
+
+#dialog-new-review #dialog-new-review-header button:hover {
+  cursor: pointer;
+}
+
+#dialog-new-review form {
+  padding: 1rem;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-column-gap: 0.5rem;
+  grid-row-gap: 1.5rem;
+  margin: 2rem auto;
+}
+
+@media (min-width: 768px)  { 
+  #dialog-new-review form { 
+    width: 80%;
+  } 
+}
+
+#dialog-new-review form .comments {
+  grid-column-start: 1; 
+  grid-column-end: 3;
+}
+
+
+#dialog-new-review form label {
+  color: #fff;
+  font-size: 1rem;
+}
+
+#dialog-new-review form button {
+  grid-column-start: 2; 
+  grid-column-end: 3;
+  background-color: rgba(255, 193, 7, 0.685);
+  color: #222;
+  padding: 0.8rem 1rem;  
+  border: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 2px 2px -2px gray;
+}
+
+#dialog-new-review form button:hover {
+  cursor: pointer;
+  background-color: #FFC107;
+}
+
+
+#dialog-new-review  form .field  input,
+#dialog-new-review  form .field  textarea {
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#dialog-new-review  form .field  textarea {
+  height: 20vh;
 }

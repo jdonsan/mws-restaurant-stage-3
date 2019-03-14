@@ -8,5 +8,5 @@ module.exports = function server() {
     }
   })
 
-  watch(['./dist/**/*.js', './dist/*.html']).on('change', browserSync.reload)
+  watch(['./dist/**/*.js', './dist/*.html', './dist/css/styles.css']).on('change', browserSync.reload)
 }
