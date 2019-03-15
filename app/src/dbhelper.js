@@ -136,6 +136,23 @@ export default class DBHelper {
     return marker;
   }
 
+  static fetchReviews(restaurantId) {
+    return new Promise((resolve, reject) => {
+      IDBHelper.countReviews(restaurantId)
+        .then(counter => (counter !== 0)
+          ? IDBHelper.getReviews(restaurantId).then(resolve)
+          : DBHelper.fetchReviewsAPI(restaurantId).then(resolve)
+        )
+        .catch(error => reject(`Request failed. Returned status of ${error}`))
+    })
+  }
+
+  static fetchReviewsAPI(restaurantId = '') {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurantId}`)
+      .then(response => response.json())
+      .then(reviews => IDBHelper.setReviews(reviews))
+  }
+
   static saveReview(review) {
     return new Promise((resolve, reject) => {
       const options = {
@@ -147,16 +164,7 @@ export default class DBHelper {
       fetch(`${DBHelper.DATABASE_URL}/reviews`, options)
         .then(response => response.json())
         .then(review => {
-          IDBHelper.setReview(review.restaurant_id, {
-            name: review.name,
-            rating: review.rating,
-            comments: review.comments,
-            date: new Date(review.createdAt).toLocaleDateString('en-EN', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })
-          })
+          IDBHelper.setReviews([review])
           resolve(review)
         })
         .catch(error => reject(error))

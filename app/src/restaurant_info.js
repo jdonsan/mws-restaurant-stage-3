@@ -35,6 +35,7 @@ function initMap() {
       fillBreadcrumb(restaurant);
       DBHelper.mapMarkerForRestaurant(restaurant, newMap);
     })
+    .then(fetchReviewsFromUrl())
     .catch(console.error)
 }
 
@@ -62,7 +63,9 @@ function onSaveReview(event) {
   }
 
   DBHelper.saveReview(review)
-    .then(() => fetchRestaurantFromURL())
+    .then(() => fetchReviewsFromUrl())
+    .then(() => onCloseDialog())
+    .then(() => window.scrollTo(0, document.body.scrollHeight))
     .catch(error => console.log(error))
 }
 
@@ -84,6 +87,23 @@ function fetchRestaurantFromURL() {
         fillRestaurantHTML(restaurant)
         resolve(restaurant)
       })
+      .catch(error => reject(error))
+
+  })
+}
+
+function fetchReviewsFromUrl() {
+  return new Promise((resolve, reject) => {
+    const restaurantId = getParameterByName('id')
+
+    if (!restaurantId) {
+      return reject('No restaurant id in URL')
+    }
+
+    DBHelper.fetchReviews(restaurantId).then(reviews => {
+      fillReviewsHTML(reviews)
+      resolve(reviews)
+    })
       .catch(error => reject(error))
 
   })
@@ -111,8 +131,6 @@ function fillRestaurantHTML(restaurant) {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML(restaurant.operating_hours);
   }
-  // fill reviews
-  fillReviewsHTML(restaurant.reviews);
 }
 
 /**
@@ -148,12 +166,15 @@ function fillReviewsHTML(reviews) {
     container.appendChild(noReviews);
     return;
   } else {
-    document.getElementById('message-no-reviews').innerHTML = '';
+    const msg = document.getElementById('message-no-reviews')
+    if (msg) {
+      msg.remove()
+    }
   }
 
   const ul = document.getElementById('reviews-list');
   ul.innerHTML = ''
-  
+
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -180,7 +201,7 @@ function createHeaderReviewHTML(review) {
   h3.appendChild(name);
 
   const date = document.createElement('span');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.createdAt).toLocaleDateString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' });
   h3.appendChild(date);
 
   return h3;

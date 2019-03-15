@@ -21,7 +21,6 @@ module.exports = function build(done) {
       .pipe(buffer())
       .pipe(rename(entry.name))
       .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(uglify())
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./dist/js'))
   })
