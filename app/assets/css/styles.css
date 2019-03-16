@@ -519,3 +519,31 @@ nav h1 a {
 #dialog-new-review  form .field  textarea {
   height: 20vh;
 }
+
+#modal-warning {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem;
+  background: #00BCD4;
+  color: #222;
+  text-align: center;
+  transition: 0.5s;
+}
+
+#modal-warning.close {
+  transform: translate(0, 100%);
+}
+
+#modal-warning p {
+  font-size: 0.9rem;
+}
+
+.pending {
+  display: inline-block;
+  background: #00BCD4;
+  color: #222;
+  padding: 0.2rem 1rem;
+  box-sizing: border-box;
+}

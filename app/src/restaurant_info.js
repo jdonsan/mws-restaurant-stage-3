@@ -43,6 +43,8 @@ function initEvents() {
   document.getElementById('reviews-add-button').addEventListener("click", onOpenDialog)
   document.getElementById('dialog-new-review-close').addEventListener("click", onCloseDialog)
   document.getElementById('dialog-new-review-form').addEventListener("submit", onSaveReview)
+  window.addEventListener("online", onOnline)
+  window.addEventListener("offline", onOffline)
 }
 
 function onOpenDialog() {
@@ -51,6 +53,22 @@ function onOpenDialog() {
 
 function onCloseDialog() {
   document.getElementById('dialog-new-review').classList.add("close");
+}
+
+function onOnline() {
+  const id = getParameterByName('id')
+
+  DBHelper.fetchReviewsOffline(parseInt(id))
+    .then(reviews => Promise.all(reviews.map(review => DBHelper.saveReview(review))))
+    .then(showNewReview)
+    .catch(console.log)
+}
+
+function onOffline() {
+  document.getElementById('modal-warning').classList.remove("close");
+  setTimeout(() => {
+    document.getElementById('modal-warning').classList.add("close");
+  }, 3000)
 }
 
 function onSaveReview(event) {
@@ -63,10 +81,14 @@ function onSaveReview(event) {
   }
 
   DBHelper.saveReview(review)
-    .then(() => fetchReviewsFromUrl())
-    .then(() => onCloseDialog())
-    .then(() => window.scrollTo(0, document.body.scrollHeight))
-    .catch(error => console.log(error))
+    .then(showNewReview)
+    .catch(console.log)
+}
+
+function showNewReview() {
+  fetchReviewsFromUrl()
+  onCloseDialog()
+  window.scrollTo(0, document.body.scrollHeight)
 }
 
 /**
@@ -100,7 +122,7 @@ function fetchReviewsFromUrl() {
       return reject('No restaurant id in URL')
     }
 
-    DBHelper.fetchReviews(restaurantId).then(reviews => {
+    DBHelper.fetchReviews(parseInt(restaurantId)).then(reviews => {
       fillReviewsHTML(reviews)
       resolve(reviews)
     })
@@ -201,7 +223,13 @@ function createHeaderReviewHTML(review) {
   h3.appendChild(name);
 
   const date = document.createElement('span');
-  date.innerHTML = new Date(review.createdAt).toLocaleDateString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' });
+  if (!review.createdAt) {
+    date.classList.add('pending')
+    date.innerHTML = 'Pending sync'
+  } else {
+    date.innerHTML = new Date(review.createdAt).toLocaleDateString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
   h3.appendChild(date);
 
   return h3;

@@ -155,20 +155,26 @@ export default class DBHelper {
 
   static saveReview(review) {
     return new Promise((resolve, reject) => {
+      if (!navigator.onLine) {
+        IDBHelper.setReviews([review])
+        return resolve(review)
+      }
+      
       const options = {
         method: 'POST',
         body: JSON.stringify(review),
         headers: { 'Content-Type': 'application/json' }
       }
-
-      fetch(`${DBHelper.DATABASE_URL}/reviews`, options)
+      return fetch(`${DBHelper.DATABASE_URL}/reviews`, options)
         .then(response => response.json())
-        .then(review => {
-          IDBHelper.setReviews([review])
-          resolve(review)
-        })
-        .catch(error => reject(error))
+        .then(review => resolve(IDBHelper.setReviews([review])))
+        .catch(reject)
     })
+  }
+
+  static fetchReviewsOffline(restaurantId) {
+    return IDBHelper.getReviews(restaurantId)
+      .then(reviews => reviews.filter(review => !review.createdAt))
   }
 
 }

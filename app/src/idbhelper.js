@@ -6,7 +6,7 @@ const STORE_REVIEW = 'review'
 const dbPromise = openDB('my-site-db', 1, {
   upgrade(db) {
     db.createObjectStore(STORE_RESTAURANT, { keyPath: 'id' })
-    db.createObjectStore(STORE_REVIEW, { keyPath: 'id' })
+    db.createObjectStore(STORE_REVIEW, { keyPath: 'id', autoIncrement: true })
       .createIndex('restaurant_id', 'restaurant_id', { unique: false });
   }
 })
@@ -26,9 +26,7 @@ export default class IDBHelper {
   static set(values) {
     return dbPromise.then(db => {
       const promise = values.map(value => {
-        const tx = db.transaction(STORE_RESTAURANT, 'readwrite');
-        tx.store.put(STORE_RESTAURANT, value);
-        return tx.done;
+        return db.put(STORE_RESTAURANT, value);
       })
 
       return Promise.all(promise).then(() => values)
