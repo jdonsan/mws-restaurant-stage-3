@@ -13,5 +13,5 @@ $ npm install
 Run in local
 
 ```sh
-$ npm run serve
+$ npm start
 ```

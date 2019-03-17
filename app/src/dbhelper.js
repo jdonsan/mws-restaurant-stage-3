@@ -177,5 +177,32 @@ export default class DBHelper {
       .then(reviews => reviews.filter(review => !review.createdAt))
   }
 
+  static fetchRestaurantOffline(restaurantId) {
+    return IDBHelper.get(restaurantId)
+      .then(restaurant => restaurant.offline && restaurant)
+  }
+
+  static setFavourite(restaurantId, isFavourite) {
+    return new Promise((resolve, reject) => {
+      if (!navigator.onLine) {
+        return IDBHelper.get(restaurantId).then(restaurant => {
+          restaurant.is_favorite = isFavourite
+          restaurant.offline = true
+          IDBHelper.set([restaurant])
+          return resolve(restaurant)
+        })
+      }
+
+      const options = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      }
+      return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}/?is_favorite=${isFavourite}`, options)
+        .then(response => response.json())
+        .then(restaurant => resolve(IDBHelper.set([restaurant])))
+        .catch(reject)
+    })
+  }
+
 }
 

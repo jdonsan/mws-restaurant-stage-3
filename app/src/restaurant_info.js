@@ -43,6 +43,7 @@ function initEvents() {
   document.getElementById('reviews-add-button').addEventListener("click", onOpenDialog)
   document.getElementById('dialog-new-review-close').addEventListener("click", onCloseDialog)
   document.getElementById('dialog-new-review-form').addEventListener("submit", onSaveReview)
+  document.getElementById('restaurant-favorite'), addEventListener('change', onToggleFavorite)
   window.addEventListener("online", onOnline)
   window.addEventListener("offline", onOffline)
 }
@@ -55,12 +56,21 @@ function onCloseDialog() {
   document.getElementById('dialog-new-review').classList.add("close");
 }
 
+function onToggleFavorite(event) {
+  const id = getParameterByName('id')
+  DBHelper.setFavourite(parseInt(id), event.target.checked)
+}
+
 function onOnline() {
   const id = getParameterByName('id')
 
   DBHelper.fetchReviewsOffline(parseInt(id))
     .then(reviews => Promise.all(reviews.map(review => DBHelper.saveReview(review))))
-    .then(showNewReview)
+    .then(fetchReviewsFromUrl)
+    .catch(console.log)
+
+  DBHelper.fetchRestaurantOffline(parseInt(id))
+    .then(restaurant => restaurant && DBHelper.setFavourite(parseInt(id), restaurant.is_favorite))
     .catch(console.log)
 }
 
@@ -148,6 +158,9 @@ function fillRestaurantHTML(restaurant) {
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
+
+  const favorite = document.getElementById('restaurant-favorite');
+  favorite.checked = (restaurant.is_favorite === 'true');
 
   // fill operating hours
   if (restaurant.operating_hours) {
